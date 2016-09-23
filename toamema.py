@@ -3,16 +3,24 @@ Toa Mema 0.1
 '''
 import time
 import praw
+import OAuth2Util
 from datetime import date
 BETRAYAL_DATE = date(2016, 7, 29)
 DISCLAIMER = '^I ^am ^a ^bot ^that ^is ^currently ^in ^development! ^Contact ^the ^mods ^if ^something ^goes ^wrong!'
 
 def parse_submissions():
+  oc = 0
+  classic = 0
   count = 0
+  
   for submission in sub.get_new(limit=None):
+    count += 1
     
-    if submission.link_flair_text == 'OC' or submission.link_flair_text == 'Classic':
-      count += 1
+    if submission.link_flair_text == 'OC':
+      oc += 1
+    
+    if submission.link_flair_text == 'Classic':
+      classic += 1
     
     if count <= 25: #only check the most recent 25 posts  
       do_comment = False
@@ -72,17 +80,23 @@ while True:
   try:
     print('Logging in...')
     r = praw.Reddit('Toa Mema v 0.1')
+    o = OAuth2Util.OAuth2Util(r)
+    o.refresh(force=True)
+    
+    '''
     f = open('login.txt', 'r')
     username = f.readline().rstrip()
     password = f.readline().rstrip()
     f.close()
 
     r.login(username, password, disable_warning=True)
+    '''
     waittime = 5 * 60;
     already_done = set()
 
     print('Starting bot loop...')
     while True:
+      o.refresh()
       sub = r.get_subreddit('bioniclememes')
       
       print('The current time is:', time.strftime("%d %b %Y %X"))

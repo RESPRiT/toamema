@@ -12,3 +12,11 @@ It is currently running and is in development.
 * Allow users to get special user flair not generally available
 * Tally posts/karma per user to create a leaderboards
 * Translate English to Matoran
+
+## Basic usage:
+Run this command to get the base requirements:
+
+    pip install -r requirements.txt
+Run this command to start the script:
+    python toamema.py
+    
