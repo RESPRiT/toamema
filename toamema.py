@@ -1,3 +1,6 @@
+'''
+Toa Mema 0.1
+'''
 import time
 import praw
 from datetime import date
@@ -64,37 +67,49 @@ def save_sidebar():
   f.write(get_sidebar())
   f.close()
   
-#Main
-print('Logging in...')
-r = praw.Reddit('Toa Mema v 0.1')
-f = open('login.txt', 'r')
-username = f.readline().rstrip()
-password = f.readline().rstrip()
-f.close()
-
-r.login(username, password, disable_warning=True)
-waittime = 5 * 60;
-already_done = set()
-
-print('Starting bot loop...')
+#Main Bot Loop
 while True:
-  sub = r.get_subreddit('bioniclememes')
-  
-  print('The current time is:', time.strftime("%d %b %Y %X"))
-  
-  print('  Counting memes...')
-  memes = parse_submissions()
-  
-  print('  Saving previous sidebar...')
-  save_sidebar()
-  
-  print('  Generating sidebar...')
-  sidebar_content = generate_sidebar(memes)
-  #print(sidebar_content)
-  
-  print('  Updating sidebar...')
-  set_sidebar(sidebar_content)
-  
-  print('Waiting ', waittime, ' seconds to continue...')
-  time.sleep(waittime)
-  
+  try:
+    print('Logging in...')
+    r = praw.Reddit('Toa Mema v 0.1')
+    f = open('login.txt', 'r')
+    username = f.readline().rstrip()
+    password = f.readline().rstrip()
+    f.close()
+
+    r.login(username, password, disable_warning=True)
+    waittime = 5 * 60;
+    already_done = set()
+
+    print('Starting bot loop...')
+    while True:
+      sub = r.get_subreddit('bioniclememes')
+      
+      print('The current time is:', time.strftime("%d %b %Y %X"))
+      
+      print('  Counting memes...')
+      memes = parse_submissions()
+      
+      print('  Saving previous sidebar...')
+      save_sidebar()
+      
+      print('  Generating sidebar...')
+      sidebar_content = generate_sidebar(memes)
+      #print(sidebar_content)
+      
+      print('  Updating sidebar...')
+      set_sidebar(sidebar_content)
+      
+      print('Waiting ', waittime, ' seconds to continue...')
+      time.sleep(waittime)
+  except KeyboardInterrupt:
+    print('Bye!') 
+    break
+  except:
+    print('*** Something went wrong, probably a connection error! ***')
+    print('         Restarting the script in 15 seconds...')
+    time.sleep(15)
+    pass
+  else:
+    print('!!! Uh oh - not sure what is wrong but I am going to bail now !!!')
+    break
