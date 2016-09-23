@@ -1,5 +1,5 @@
 '''
-Toa Mema 0.1
+Toa Mema 0.2
 '''
 import time
 import praw
@@ -9,18 +9,19 @@ BETRAYAL_DATE = date(2016, 7, 29)
 DISCLAIMER = '^I ^am ^a ^bot ^that ^is ^currently ^in ^development! ^Contact ^the ^mods ^if ^something ^goes ^wrong!'
 
 def parse_submissions():
-  oc = 0
-  classic = 0
+  data = {}
+  data['oc'] = 0
+  data['classic'] = 0
   count = 0
   
   for submission in sub.get_new(limit=None):
     count += 1
     
     if submission.link_flair_text == 'OC':
-      oc += 1
+      data['oc'] += 1
     
     if submission.link_flair_text == 'Classic':
-      classic += 1
+      data['classic'] += 1
     
     if count <= 25: #only check the most recent 25 posts  
       do_comment = False
@@ -45,8 +46,10 @@ def parse_submissions():
             comment.delete()
         already_done.add(submission.id)
     
-  print('  Meme Count: ', count)
-  return count
+  print('    OC Conut: ', data['oc'])
+  print('    Classic Count: ', data['classic'])
+  print('    Meme Count: ', data['oc'] + data['classic'])
+  return data
     
 def get_days_since_betrayal():
   return (date.today() - BETRAYAL_DATE).days
@@ -55,13 +58,13 @@ def get_sidebar():
   settings = r.get_settings(sub)
   return settings['description']
 
-def generate_sidebar(memes):
+def generate_sidebar(data):
   f = open('sidebar.txt', 'r')
   sidebar = f.read()
   f.close()
   
   sidebar = sidebar.replace('CANCEL_DAYS', str(get_days_since_betrayal()))
-  sidebar = sidebar.replace('MEME_COUNT', str(memes))
+  sidebar = sidebar.replace('MEME_COUNT', str(data['oc'] + data['classic']))
   lastedit = '*^Last edited on: ' + time.strftime("%d %b %Y %X") + '*'
   sidebar = sidebar.replace('LAST_EDIT', lastedit.replace(' ', ' ^'))
   
@@ -83,33 +86,24 @@ while True:
     o = OAuth2Util.OAuth2Util(r)
     o.refresh(force=True)
     
-    '''
-    f = open('login.txt', 'r')
-    username = f.readline().rstrip()
-    password = f.readline().rstrip()
-    f.close()
-
-    r.login(username, password, disable_warning=True)
-    '''
     waittime = 5 * 60;
     already_done = set()
-
+    sub = r.get_subreddit('bioniclememes')
+    
     print('Starting bot loop...')
     while True:
       o.refresh()
-      sub = r.get_subreddit('bioniclememes')
       
       print('The current time is:', time.strftime("%d %b %Y %X"))
       
-      print('  Counting memes...')
-      memes = parse_submissions()
+      print('  Parsing submissions...')
+      data = parse_submissions()
       
       print('  Saving previous sidebar...')
       save_sidebar()
       
       print('  Generating sidebar...')
-      sidebar_content = generate_sidebar(memes)
-      #print(sidebar_content)
+      sidebar_content = generate_sidebar(data)
       
       print('  Updating sidebar...')
       set_sidebar(sidebar_content)
