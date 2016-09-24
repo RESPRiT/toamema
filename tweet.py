@@ -18,7 +18,7 @@ api = tweepy.API(auth)
 
 def get_img_path(img_id):
   for fname in os.listdir('images'):
-    img_path = 'images\\' + fname
+    img_path = 'images/' + fname
     if(os.path.isfile(img_path) and os.path.splitext(fname)[0] == img_id):
       return img_path
   

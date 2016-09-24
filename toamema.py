@@ -59,7 +59,7 @@ def get_sidebar():
   return settings['description']
 
 def generate_sidebar(data):
-  f = open('txt\\sidebar.txt', 'r')
+  f = open('txt/sidebar.txt', 'r')
   sidebar = f.read()
   f.close()
   
@@ -74,7 +74,7 @@ def set_sidebar(str):
   r.update_settings(r.get_subreddit('bioniclememes'), description=str, allow_images='true')
   
 def save_sidebar():
-  f = open('txt\\lastsidebar.txt', 'w+')
+  f = open('txt/lastsidebar.txt', 'w+')
   f.write(get_sidebar())
   f.close()
   
