@@ -46,9 +46,9 @@ def parse_submissions():
             comment.delete()
         already_done.add(submission.id)
     
-  print('    OC Conut: ', data['oc'])
-  print('    Classic Count: ', data['classic'])
-  print('    Meme Count: ', data['oc'] + data['classic'])
+  print('  OC Conut: ', data['oc'])
+  print('  Classic Count: ', data['classic'])
+  print('  Meme Count: ', data['oc'] + data['classic'])
   return data
     
 def get_days_since_betrayal():
@@ -59,7 +59,7 @@ def get_sidebar():
   return settings['description']
 
 def generate_sidebar(data):
-  f = open('sidebar.txt', 'r')
+  f = open('txt\\sidebar.txt', 'r')
   sidebar = f.read()
   f.close()
   
@@ -74,7 +74,7 @@ def set_sidebar(str):
   r.update_settings(r.get_subreddit('bioniclememes'), description=str, allow_images='true')
   
 def save_sidebar():
-  f = open('lastsidebar.txt', 'w+')
+  f = open('txt\\lastsidebar.txt', 'w+')
   f.write(get_sidebar())
   f.close()
   
@@ -82,7 +82,7 @@ def save_sidebar():
 while True:
   try:
     print('Logging in...')
-    r = praw.Reddit('Toa Mema v 0.1')
+    r = praw.Reddit('Toa Mema v 0.2')
     o = OAuth2Util.OAuth2Util(r)
     o.refresh(force=True)
     
