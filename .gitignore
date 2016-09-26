@@ -1,10 +1,11 @@
 # Sensitive Information
 oauth.ini
-twitter.txt
+twitter.ini
 
 # Data
 txt/lastsidebar.txt
 images/*.*
+translations/*.*
 
 # Python
 __pycache__/

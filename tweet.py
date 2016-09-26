@@ -1,17 +1,14 @@
 import tweepy
+import configparser
 import os
  
 # Read consumer keys and access tokens from file, used for OAuth
-f = open('twitter.txt', 'r')
-consumer_key = f.readline().rstrip()
-consumer_secret = f.readline().rstrip()
-access_token = f.readline().rstrip()
-access_token_secret = f.readline().rstrip()
-f.close()
+config = configparser.ConfigParser()
+config.read('twitter.ini')
  
 # OAuth process, using the keys and tokens
-auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
-auth.set_access_token(access_token, access_token_secret)
+auth = tweepy.OAuthHandler(config['Twitter']['consumer_key'], config['Twitter']['consumer_secret'])
+auth.set_access_token(config['Twitter']['access_token'], config['Twitter']['access_token_secret'])
  
 # Creation of the actual interface, using authentication
 api = tweepy.API(auth)
@@ -31,3 +28,5 @@ def tweet_meme(img_id, title=''):
   except:
     print('! Something went wrong, the file path is probably invalid !')
     pass
+    
+print(api.me().name)

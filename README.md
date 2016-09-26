@@ -27,3 +27,12 @@ Run this command to start the script:
 This script uses [OAuth2Util](https://github.com/SmBe19/praw-OAuth2Util/tree/master/OAuth2Util) to handle OAuth2.
 
 You must include your own `oauth.ini` file for this script to run properly, check the README for OAuth2Util to find out what information you need to provide and how to get it.
+
+## Twitter
+For this script to post on Twitter, you must provide a `twitter.ini` file in this format:
+
+    [Twitter]
+    consumer_key = 
+    consumer_secret = 
+    access_token = 
+    access_token_secret = 
