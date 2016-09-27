@@ -112,7 +112,10 @@ def save_sidebar():
 
 def parse_mail():
   for mail in r.get_unread():
-    if(mail.subject == 'username mention'):
+    mail.mark_as_read()
+    read_mail.add(mail.name)
+
+    if(mail.subject == 'username mention' and mail.name not in read_mail):
       m = re.search('\[(.*)\]', mail.body)
       if m:
         sentence = m.group(1)
@@ -126,7 +129,7 @@ def parse_mail():
       except:
         print('    Something went wrong!')
         pass
-    mail.mark_as_read()
+
 
 def get_img_path(img_id, dir):
   """
@@ -150,6 +153,7 @@ while True:
 
     waittime = 5 * 60;
     already_done = set()
+    read_mail = set()
     sub = r.get_subreddit('bioniclememes')
 
     print('Starting bot loop...')
