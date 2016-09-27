@@ -1,2 +1,4 @@
 praw
 praw-oauth2util
+pillow
+imgurpython

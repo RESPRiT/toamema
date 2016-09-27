@@ -8,12 +8,14 @@ It is currently running and is in development.
 * Alerts users via comment when they forget to flair their posts
 * Updates the sidebar with information such as the days since Bionicle was cancelled
 
+## Features in progress
+* Tweet top posts to Twitter
+* Translate English to Matoran
+
 ## Possible upcoming features
 * Allow users to get special user flair not generally available
 * Tally posts/karma per user to create a leaderboards
-* Translate English to Matoran
 * Post top posts to /r/BionicleLego (probably weekly, given permission)
-* Tweet top posts to Twitter
 
 ## Basic usage
 Run this command to get the base requirements:
@@ -28,11 +30,15 @@ This script uses [OAuth2Util](https://github.com/SmBe19/praw-OAuth2Util/tree/mas
 
 You must include your own `oauth.ini` file for this script to run properly, check the README for OAuth2Util to find out what information you need to provide and how to get it.
 
-## Twitter
-For this script to post on Twitter, you must provide a `twitter.ini` file in this format:
+## Twitter and Imgur
+For this script to post on Twitter and upload to Imgur, you must provide a `authorization.ini` file in this format:
 
     [Twitter]
-    consumer_key = 
-    consumer_secret = 
-    access_token = 
-    access_token_secret = 
+    consumer_key =
+    consumer_secret =
+    access_token =
+    access_token_secret =
+
+    [Imgur]
+    client_id = 
+    client_secret =
