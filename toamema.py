@@ -158,9 +158,6 @@ while True:
 
       print('The current time is:', time.strftime("%d %b %Y %X"))
 
-      print('  Parsing mail...')
-      parse_mail()
-
       print('  Parsing submissions...')
       data = parse_submissions()
 
@@ -175,12 +172,16 @@ while True:
         warnings.simplefilter("ignore")
         set_sidebar(sidebar_content)
 
-      print('Waiting ', waittime, ' seconds to continue...')
-      time.sleep(waittime)
+      print('Parsing mail while I wait...')
+
+      for i in range(0, int(waittime / 10)):
+        print('Waiting ', waittime - (i * 10), ' seconds to continue...')
+        parse_mail()
+        time.sleep(10)
+
   except KeyboardInterrupt:
     print('Bye!')
     break
-  '''
   except:
     print('*** Something went wrong, probably a connection error! ***')
     print('         Restarting the script in 15 seconds...')
@@ -189,4 +190,3 @@ while True:
   else:
     print('!!! Uh oh - not sure what is wrong but I am going to bail now !!!')
     break
-  '''

@@ -2,10 +2,11 @@
 oauth.ini
 authorization.ini
 
-# Data
+# Data and Resources
 txt/lastsidebar.txt
 images/*.*
 translations/*.*
+Matoran.ttf
 
 # Python
 __pycache__/

@@ -43,9 +43,9 @@ For this script to post on Twitter and upload to Imgur, you must provide a `auth
     client_id =
     client_secret =
 
-## Usage
-
 ### Matoran
+You must provide your own `Matoran.ttf` font file for the bot to reference.
+
 To have Toa Mema translate an English sentence into Matoran, simple write a comment in the following format:
 
     /u/ToaMema [INSERT_MESSAGE]
