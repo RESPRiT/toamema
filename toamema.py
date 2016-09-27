@@ -113,7 +113,6 @@ def save_sidebar():
 def parse_mail():
   for mail in r.get_unread():
     mail.mark_as_read()
-    read_mail.add(mail.name)
 
     if(mail.subject == 'username mention' and mail.name not in read_mail):
       m = re.search('\[(.*)\]', mail.body)
@@ -130,6 +129,7 @@ def parse_mail():
         print('    Something went wrong!')
         pass
 
+    read_mail.add(mail.name)
 
 def get_img_path(img_id, dir):
   """
