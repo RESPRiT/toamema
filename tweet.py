@@ -13,18 +13,6 @@ auth.set_access_token(config['Twitter']['access_token'], config['Twitter']['acce
 # Creation of the actual interface, using authentication
 api = tweepy.API(auth)
 
-def get_img_path(img_id):
-  """
-  Returns an image path given an id
-  """
-
-  for fname in os.listdir('images'):
-    img_path = 'images/' + fname
-    if(os.path.isfile(img_path) and os.path.splitext(fname)[0] == img_id):
-      return img_path
-
-  return None
-
 def tweet_meme(img_id, title=''):
   """
   Tweets an image given an id and title

@@ -1,14 +1,18 @@
 '''
-Toa Mema 0.2
+Toa Mema 0.3
 '''
 import matoran
 import tweet
 import time
+import warnings
 import praw
+import re
+import os
 import OAuth2Util
 from datetime import date
 BETRAYAL_DATE = date(2016, 7, 29)
-DISCLAIMER = '^I ^am ^a ^bot ^that ^is ^currently ^in ^development! ^Contact ' \
+DISCLAIMER = '\n\n---\n\n^I ^am ^a ^bot ^that ^is ^currently ^in ' \
+             '^development! ^Contact ' \
              '^the ^mods ^if ^something ^goes ^wrong!'
 
 def parse_submissions():
@@ -48,9 +52,10 @@ def parse_submissions():
 
       if submission.link_flair_text is not None and submission.id not in already_done:
         for comment in flat_comments:
-          if comment.author.name == 'ToaMema' and 'post flair' in comment.body:
-            print('    I am going to delete a flair comment on', submission.id)
-            comment.delete()
+          if comment.author is not None:
+            if comment.author.name == 'ToaMema' and 'post flair' in comment.body:
+              print('    I am going to delete a flair comment on', submission.id)
+              comment.delete()
         already_done.add(submission.id)
 
   print('  OC Conut: ', data['oc'])
@@ -105,6 +110,36 @@ def save_sidebar():
   f.write(get_sidebar())
   f.close()
 
+def parse_mail():
+  for mail in r.get_unread():
+    if(mail.subject == 'username mention'):
+      m = re.search('\[(.*)\]', mail.body)
+      if m:
+        sentence = m.group(1)
+        matoran.write_matoran(sentence, id=mail.name)
+        img_path = get_img_path(mail.name, 'translations')
+        link = matoran.upload_matoran(img_path)
+        os.remove(img_path)
+      try:
+        print('  Translating comment id ' + mail.name)
+        mail.reply('[' + sentence + '](' + link + ')' + DISCLAIMER)
+      except:
+        print('    Something went wrong!')
+        pass
+    mail.mark_as_read()
+
+def get_img_path(img_id, dir):
+  """
+  Returns an image path given an id
+  """
+
+  for fname in os.listdir(dir):
+    img_path = dir + '/' + fname
+    if(os.path.isfile(img_path) and os.path.splitext(fname)[0] == img_id):
+      return img_path
+
+  return None
+
 #Main Bot Loop
 while True:
   try:
@@ -123,6 +158,9 @@ while True:
 
       print('The current time is:', time.strftime("%d %b %Y %X"))
 
+      print('  Parsing mail...')
+      parse_mail()
+
       print('  Parsing submissions...')
       data = parse_submissions()
 
@@ -133,13 +171,16 @@ while True:
       sidebar_content = generate_sidebar(data)
 
       print('  Updating sidebar...')
-      set_sidebar(sidebar_content)
+      with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        set_sidebar(sidebar_content)
 
       print('Waiting ', waittime, ' seconds to continue...')
       time.sleep(waittime)
   except KeyboardInterrupt:
     print('Bye!')
     break
+  '''
   except:
     print('*** Something went wrong, probably a connection error! ***')
     print('         Restarting the script in 15 seconds...')
@@ -148,3 +189,4 @@ while True:
   else:
     print('!!! Uh oh - not sure what is wrong but I am going to bail now !!!')
     break
+  '''

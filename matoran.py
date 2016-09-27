@@ -45,18 +45,6 @@ def write_matoran(string, id=0, dir='translations'):
 
   image.save('translations/' + str(id) + '.jpg', 'JPEG')
 
-def get_img_path(img_id):
-  """
-  Returns an image path given an id
-  """
-
-  for fname in os.listdir('translations'):
-    img_path = 'translations/' + fname
-    if(os.path.isfile(img_path) and os.path.splitext(fname)[0] == img_id):
-      return img_path
-
-  return None
-
 def upload_matoran(img_path):
   data = client.upload_from_path(img_path)
   return data['link']
