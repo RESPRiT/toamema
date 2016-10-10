@@ -11,9 +11,10 @@ import os
 import OAuth2Util
 from datetime import date
 BETRAYAL_DATE = date(2016, 7, 29)
-DISCLAIMER = '\n\n---\n\n^I ^am ^a ^bot ^that ^is ^currently ^in ' \
+DISCLAIMER = '\n\n---\n\n^I ^am ^the ^/r/BionicleMemes ^bot ^that ^is ^currently ^in ' \
              '^development! ^Contact ' \
              '^the ^mods ^if ^something ^goes ^wrong!'
+WHITELIST = set(['bioniclememes', 'teenagers'])
 
 def parse_submissions():
   """
@@ -114,7 +115,7 @@ def parse_mail():
   for mail in r.get_unread():
     mail.mark_as_read()
 
-    if(mail.subject == 'username mention' and mail.name not in read_mail):
+    if(mail.subject == 'username mention' and mail.name not in read_mail and mail.subreddit in WHITELIST):
       m = re.search('\[(.*)\]', mail.body)
       if m:
         sentence = m.group(1)
@@ -179,7 +180,8 @@ while True:
       print('Parsing mail while I wait...')
 
       for i in range(0, int(waittime / 10)):
-        print('Waiting ', waittime - (i * 10), ' seconds to continue...')
+        if i % 60 == 0:
+          print('Waiting ', waittime - (i * 10), ' seconds to continue...')
         parse_mail()
         time.sleep(10)
 
