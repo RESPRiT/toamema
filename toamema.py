@@ -115,20 +115,21 @@ def parse_mail():
   for mail in r.get_unread():
     mail.mark_as_read()
 
-    if(mail.subject == 'username mention' and mail.name not in read_mail and mail.subreddit in WHITELIST):
-      m = re.search('\[(.*)\]', mail.body)
-      if m:
-        sentence = m.group(1)
-        matoran.write_matoran(sentence, id=mail.name)
-        img_path = get_img_path(mail.name, 'translations')
-        link = matoran.upload_matoran(img_path)
-        os.remove(img_path)
-      try:
-        print('  Translating comment id ' + mail.name)
-        mail.reply('[' + sentence + '](' + link + ')' + DISCLAIMER)
-      except:
-        print('    Something went wrong!')
-        pass
+    if(mail.subject == 'username mention' and mail.name not in read_mail and mail.subreddit is not None):
+      if(mail.subreddit.display_name in WHITELIST):
+        m = re.search('\[(.*)\]', mail.body)
+        if m:
+          sentence = m.group(1)
+          matoran.write_matoran(sentence, id=mail.name)
+          img_path = get_img_path(mail.name, 'translations')
+          link = matoran.upload_matoran(img_path)
+          os.remove(img_path)
+        try:
+          print('  Translating comment id ' + mail.name)
+          mail.reply('[' + sentence + '](' + link + ')' + DISCLAIMER)
+        except:
+          print('    Something went wrong!')
+          pass
 
     read_mail.add(mail.name)
 
@@ -180,11 +181,10 @@ while True:
       print('Parsing mail while I wait...')
 
       for i in range(0, int(waittime / 10)):
-        if i % 60 == 0:
+        if((i * 10) % 60 == 0):
           print('Waiting ', waittime - (i * 10), ' seconds to continue...')
         parse_mail()
         time.sleep(10)
-
   except KeyboardInterrupt:
     print('Bye!')
     break
