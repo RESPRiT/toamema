@@ -14,7 +14,6 @@ BETRAYAL_DATE = date(2016, 7, 29)
 DISCLAIMER = '\n\n---\n\n^I ^am ^the ^/r/BionicleMemes ^bot ^that ^is ^currently ^in ' \
              '^development! ^Contact ' \
              '^the ^mods ^if ^something ^goes ^wrong!'
-WHITELIST = set(['bioniclememes', 'teenagers'])
 
 def parse_submissions():
   """
@@ -79,6 +78,13 @@ def get_sidebar():
   settings = r.get_settings(sub)
   return settings['description']
 
+def get_whitelist():
+  f = open('txt/whitelist.txt', 'w+')
+  whitelist = set(line.strip() for line in f)
+  f.close()
+
+  return whitelist
+
 def generate_sidebar(data):
   """
   Returns sidebar source text given data
@@ -111,25 +117,28 @@ def save_sidebar():
   f.write(get_sidebar())
   f.close()
 
+def translate_mail(mail):
+  if(mail.subject == 'username mention' and mail.name not in read_mail and mail.subreddit is not None):
+    if(mail.subreddit.display_name in WHITELIST):
+      m = re.search('\[(.*)\]', mail.body)
+      if m:
+        sentence = m.group(1)
+        matoran.write_matoran(sentence, id=mail.name)
+        img_path = get_img_path(mail.name, 'translations')
+        link = matoran.upload_matoran(img_path)
+        os.remove(img_path)
+      try:
+        print('  Translating comment id ' + mail.name)
+        mail.reply('[' + sentence + '](' + link + ')' + DISCLAIMER)
+      except:
+        print('    Something went wrong!')
+        pass
+
 def parse_mail():
   for mail in r.get_unread():
     mail.mark_as_read()
 
-    if(mail.subject == 'username mention' and mail.name not in read_mail and mail.subreddit is not None):
-      if(mail.subreddit.display_name in WHITELIST):
-        m = re.search('\[(.*)\]', mail.body)
-        if m:
-          sentence = m.group(1)
-          matoran.write_matoran(sentence, id=mail.name)
-          img_path = get_img_path(mail.name, 'translations')
-          link = matoran.upload_matoran(img_path)
-          os.remove(img_path)
-        try:
-          print('  Translating comment id ' + mail.name)
-          mail.reply('[' + sentence + '](' + link + ')' + DISCLAIMER)
-        except:
-          print('    Something went wrong!')
-          pass
+    translate_mail(mail)
 
     read_mail.add(mail.name)
 
@@ -157,6 +166,7 @@ while True:
     already_done = set()
     read_mail = set()
     sub = r.get_subreddit('bioniclememes')
+    whitelist = get_whitelist()
 
     print('Starting bot loop...')
     while True:

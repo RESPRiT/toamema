@@ -4,6 +4,7 @@ authorization.ini
 
 # Data and Resources
 txt/lastsidebar.txt
+txt/whitelist.txt
 images/*.*
 translations/*.*
 Matoran.ttf
